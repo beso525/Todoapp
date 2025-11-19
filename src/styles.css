@@ -1,0 +1,195 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: "Bungee", "Noto Sans", sans-serif;
+  background: #F8FCDA;
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #191923;
+  padding: 0.5em;
+}
+
+#content {
+  display: flex;
+  flex: 1;
+}
+
+#sidebar {
+    padding: 15px;
+    width: 260px;
+    background-color: #16697a;
+    color: black;
+    box-shadow: 0px 0px 15px 5px black;
+}
+
+#sidebar>h2 {
+    font-size: 2em;
+    justify-self: center;
+}
+
+.nav-item {
+    display: flex;
+    font-size: 1.1em;
+}
+
+.nav-item:hover {
+    background-color: #145e6d;
+}
+
+.nav-item:active {
+    background-color: #1ea4be;
+}
+
+button {
+    margin-top: 2rem;
+    font-size: 1.1em;
+    background: #F8FCDA;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 1em;
+    width: 75%;
+    margin: 20px;
+}
+
+button:hover {
+    transform: scale(1.02);
+    transition-duration: 300ms;
+    cursor: pointer;
+}
+
+/* Modal css */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+#taskForm {
+  display: flex;
+  flex-direction: column;
+  background: #145e6d;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  height: 20rem;
+  width: 40rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.modal-content {
+  flex: 1;
+}
+
+.modal-content h3 {
+  color: black;
+  margin-bottom: 10px;
+}
+
+.modal-content label {
+  color: black;
+}
+
+.modal-content input, textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.modalBtns {
+  display: flex;
+  justify-content: space-around;
+  align-items: end;
+}
+
+/* Checkbox styling */
+.nav-item {
+  --text: #000000;
+  border-radius: 10px;
+  position: relative;
+  padding: 5px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.nav-item  label {
+  color: var(--text);
+  position: relative;
+  cursor: pointer;
+}
+
+/* Main section */
+#main {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  color: black;
+  width: 85%;
+}
+
+#main > h2 {
+  justify-content: center;
+}
+
+#todoList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background-color: #182646;
+  padding: 10px;
+  border: 5px solid#0c1322;
+}
+
+#todoItem {
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+#todoItem p {
+  flex: 1;
+}
+
+
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+}
+
+footer {
+    background-color: #191923;
+    display: flex;
+    justify-content: center;
+    padding: 0.5em;
+    font-weight: bold;
+}
