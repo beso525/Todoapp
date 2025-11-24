@@ -1,33 +1,37 @@
-import { isThisWeek } from "date-fns";
+// todoManager.js
+import { isThisWeek, isToday } from "date-fns";
 import { renderContentDetails } from "./ui";
 
-// todoManager.js
-const todos = [
+export let currPage = { title: "Home", id: "homeBtn" };
+
+let todos = [
   {
-    id: 1,
+    todoId: 1,
     title: "Exercise",
     description: "",
-    dueDate: "17 March 2025",
+    dueDate: "2025-12-30",
     priority: "",
     project: null,
   },
   {
-    id: 2,
+    todoId: 2,
     title: "Reading",
     description: "",
-    dueDate: 0,
+    dueDate: new Date(),
     priority: "",
     project: null,
   },
 ];
 
-const projects = [];
+let doneTodos = [];
 
-// project section (contains todos but overarching project title)
-export function addProject(title) {
+let projects = [{ projectId: 1, title: "Bench 180" }];
+
+// project section
+export function addProject(projectData) {
   const project = {
     projectId: crypto.randomUUID(),
-    title,
+    title: projectData.title,
   };
   projects.push(project);
   return project;
@@ -39,52 +43,64 @@ export function deleteProject(projectId) {
 }
 
 // todos section
-export function addTodo(title, description, dueDate, priority, project = null) {
+export function addTodo(todoData) {
   const todo = {
     todoId: crypto.randomUUID(),
-    title,
-    description,
-    dueDate: new Date(dueDate).toISOString(),
-    priority,
-    project,
+    title: todoData.title,
+    description: todoData.description,
+    dueDate: new Date(todoData.dueDate),
+    priority: todoData.priority,
+    project: todoData.project || null,
     completed: false,
   };
 
   todos.push(todo);
   return todo;
 }
+
 export function deleteTodo(todoId) {
-  const index = todos.findIndex((t) => t.id === todoId);
-  if (index !== -1) todos.splice(index, 1);
+  const index = todos.findIndex((t) => t.todoId === todoId);
+  if (index !== -1) {
+    todos.splice(index, 1);
+    selectPage(currPage.title, currPage.id);
+  }
 }
 
-export function toggleTodo(todoId) {
-  const todo = todos.find((t) => t.id === todoId);
-  if (todo) todo.completedToday = !todo.completedToday;
+export function completeTodo(todoId) {
+  const index = todos.findIndex((t) => t.todoId === todoId);
+  todos.splice(index, 1);
+  // saveToLocalStorage();
+  selectPage(currPage.title, currPage.id);
 }
 
-export function selectPage(pageId) {
+export function selectPage(pageTitle, pageId) {
+  currPage = { title: pageTitle, id: pageId };
   const todos = getTodos();
 
   let filtered = [];
 
   switch (pageId) {
-    case "homeBtn":
-      filtered = todos;
-      break;
     case "todayBtn":
       filtered = todos.filter((todo) => isToday(todo.dueDate));
       break;
     case "weekBtn":
       filtered = todos.filter((todo) => isThisWeek(todo.dueDate));
       break;
-
     default:
+      filtered = todos;
   }
 
-  renderContentDetails(filtered);
+  renderContentDetails(pageTitle, filtered);
 }
 
 export function getTodos() {
   return todos;
+}
+
+export function getProjects() {
+  return projects;
+}
+
+function saveToLocalStorage() {
+  localStorage.setItem("todos");
 }

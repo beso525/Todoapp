@@ -1,5 +1,5 @@
 import "./styles.css";
-import { renderContentDetails, renderPages } from "./modules/ui";
+import { renderContentDetails, renderSidebar } from "./modules/ui";
 import "./modules/todoManager";
 import { format } from "date-fns";
 
@@ -38,6 +38,6 @@ function createLayout() {
 
 document.addEventListener("DOMContentLoaded", () => {
   createLayout();
-  renderPages();
+  renderSidebar();
   renderContentDetails();
 });

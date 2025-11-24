@@ -1,6 +1,7 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 html, body {
@@ -55,81 +56,158 @@ header {
     background-color: #1ea4be;
 }
 
-button {
-    margin-top: 2rem;
-    font-size: 1.1em;
-    background: #F8FCDA;
-    border: 1px solid rgba(0, 0, 0, 0.5);
-    border-radius: 1em;
-    width: 75%;
-    margin: 20px;
-}
-
-button:hover {
-    transform: scale(1.02);
-    transition-duration: 300ms;
-    cursor: pointer;
-}
-
 /* Modal css */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100vw;
   height: 100vh;
   background-color: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 100;
+  animation: fadeIn 0.2s ease-out;
 }
 
 #taskForm {
-  display: flex;
-  flex-direction: column;
-  background: #145e6d;
-  padding: 20px;
+  background-color: #ffffff;
+  color: black;
+  padding: 1.5rem;
   border-radius: 10px;
-  text-align: center;
-  height: 20rem;
-  width: 40rem;
+  width: 32rem;
   box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  animation: scaleIn 0.2s ease-out;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
-  width: 100%;
+  align-items: center;;
   margin-bottom: 1rem;
 }
 
-.modal-content {
-  flex: 1;
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
 }
 
-.modal-content h3 {
-  color: black;
-  margin-bottom: 10px;
+.modal-close {
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #444;
+  transition: 0.15s;
+}
+
+.modal-close:hover {
+  color: #d33;
+  transform: scale(1.1);
 }
 
 .modal-content label {
   color: black;
-}
-
-.modal-content input, textarea {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 5px;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+  display: block;
 }
 
 .modalBtns {
   display: flex;
-  justify-content: space-around;
-  align-items: end;
+  flex-direction: column;
 }
 
-/* Checkbox styling */
+.modal-content input, 
+.modal-content textarea,
+.modal-content select {
+    width: 100%;
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    transition: border 0.15s;
+}
+
+.modal-content input:focus,
+.modal-content textarea:focus,
+.modal-content select:focus {
+  border-color: #4A90E2;
+  outline: none;
+}
+
+/* ICON BUTTONS */
+.icon-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.icon-btn {
+  font-size: 1.25rem;
+  padding: 0.4rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.15s;
+  border: 1px solid transparent;
+}
+
+.icon-btn:hover {
+  background: #f3f3f3;
+}
+
+/* Priority Coloring */
+.icon-btn.low::selection {
+  border-color: #91c46b;
+  color: #91c46b;
+}
+
+.medium.icon-btn::selection {
+  border-color: #f2b653;
+  color: #f2b653;
+}
+
+.icon-btn.high::selection {
+  border-color: #d9534f;
+  color: #d9534f;
+}
+
+.submit-div {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-submit {
+  background: #145e6d;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.modal-submit:hover {
+  background: #16697a;
+}
+
+.ddSpan {
+  padding-right: 10px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* nav item styling */
 .nav-item {
   --text: #000000;
   border-radius: 10px;
@@ -177,19 +255,9 @@ button:hover {
   flex: 1;
 }
 
-
-
 .actions {
   display: flex;
   align-items: center;
   gap: 14px;
   cursor: pointer;
-}
-
-footer {
-    background-color: #191923;
-    display: flex;
-    justify-content: center;
-    padding: 0.5em;
-    font-weight: bold;
 }

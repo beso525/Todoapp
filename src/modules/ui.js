@@ -1,8 +1,17 @@
 // ui.js
-import { getTodos, selectPage } from "./todoManager.js";
+import { format } from "date-fns";
+import {
+  getTodos,
+  getProjects,
+  selectPage,
+  addTodo,
+  deleteTodo,
+  completeTodo,
+  currPage,
+} from "./todoManager.js";
 
 // the navbar (sidebar)
-export function renderPages() {
+export function renderSidebar() {
   const sidebar = document.querySelector("#sidebar");
   if (!sidebar) return;
   sidebar.innerHTML = "";
@@ -32,8 +41,7 @@ export function renderPages() {
       if (op.id === "addBtn") {
         renderModalForm();
       } else {
-        console.log(selectPage(op.id));
-        selectPage(op.id);
+        selectPage(op.title, op.id);
       }
     });
 
@@ -55,7 +63,7 @@ export function renderModalForm() {
 
   /* Modal Container */
   const container = document.createElement("div");
-  container.classList.add("modal-overlay");
+  container.classList.add("modal-container");
 
   const form = document.createElement("form");
   form.id = "taskForm";
@@ -69,11 +77,10 @@ export function renderModalForm() {
 
   const closeBtn = document.createElement("i");
   closeBtn.classList.add("fa-solid", "fa-xmark", "modal-close");
-  closeBtn.style.cursor = "pointer";
   closeBtn.addEventListener("click", () => modal.remove());
 
   header.append(title, closeBtn);
-  ///////////////////////////////////////////////////////////////////////////////////
+
   // Modal Content
   const content = document.createElement("div");
   content.classList.add("modal-content");
@@ -82,42 +89,40 @@ export function renderModalForm() {
   const titleDiv = document.createElement("div");
   const titleInput = document.createElement("input");
   titleInput.type = "text";
-  titleInput.placeholder = "Title: Do Laundry";
+  titleInput.placeholder = "Title: Workout";
   titleInput.required = true;
+  titleInput.id = "titleInput";
 
   titleDiv.append(titleInput);
 
   // DESCRIPTION input
   const descDiv = document.createElement("div");
   const descInput = document.createElement("textarea");
+  descInput.placeholder = "Description: Leg day";
+  descInput.id = "descInput";
 
   descDiv.append(descInput);
 
   const modalBtns = document.createElement("div");
   modalBtns.classList.add("modalBtns");
-  // ---------- DUE DATE ICON BUTTON ----------
+
+  // due date input
   const dueDiv = document.createElement("div");
-  dueDiv.classList.add("modal-row");
+  dueDiv.classList.add("icon-row");
 
   const dueLabel = document.createElement("label");
+  dueLabel.htmlFor = "dueDate";
   dueLabel.textContent = "Due Date";
 
-  // clickable calendar icon
-  const dueBtn = document.createElement("i");
-  dueBtn.classList.add("fa-solid", "fa-calendar-days", "icon-btn");
-
   const dueInput = document.createElement("input");
+  dueInput.id = "dueDate";
   dueInput.type = "date";
-  dueInput.style.display = "none";
 
-  // clicking the icon triggers the hidden date input
-  dueBtn.addEventListener("click", () => dueInput.showPicker());
+  dueDiv.append(dueLabel, dueInput);
 
-  dueDiv.append(dueLabel, dueBtn, dueInput);
-
-  // ---------- PRIORITY ICON BUTTONS ----------
+  // Project icon buttons
   const priorityDiv = document.createElement("div");
-  priorityDiv.classList.add("modal-row");
+  priorityDiv.classList.add("icon-row");
 
   const pLabel = document.createElement("label");
   pLabel.textContent = "Priority";
@@ -125,26 +130,28 @@ export function renderModalForm() {
   let selectedPriority = null;
 
   const low = document.createElement("i");
-  low.classList.add("fa-solid", "fa-flag", "priority-low", "icon-btn");
+  low.classList.add("fa-solid", "fa-flag", "low", "icon-btn");
 
   const med = document.createElement("i");
-  med.classList.add("fa-solid", "fa-flag", "priority-medium", "icon-btn");
+  med.classList.add("fa-solid", "fa-flag", "medium", "icon-btn");
 
   const high = document.createElement("i");
-  high.classList.add("fa-solid", "fa-flag", "priority-high", "icon-btn");
+  high.classList.add("fa-solid", "fa-flag", "high", "icon-btn");
 
   [low, med, high].forEach((btn, index) => {
     btn.dataset.level = ["low", "medium", "high"][index];
     btn.addEventListener("click", () => {
+      btn.classList.add;
       selectedPriority = btn.dataset.level;
     });
   });
 
   priorityDiv.append(pLabel, low, med, high);
 
-  // ---------- PROJECT DROPDOWN ICON ----------
+  // Project dropdown
+  const projects = getProjects();
   const projectDiv = document.createElement("div");
-  projectDiv.classList.add("modal-row");
+  projectDiv.classList.add("icon-row");
 
   const projLabel = document.createElement("label");
   projLabel.textContent = "Project";
@@ -155,6 +162,13 @@ export function renderModalForm() {
   const projSelect = document.createElement("select");
   projSelect.style.display = "none";
 
+  projects.forEach((p) => {
+    const option = document.createElement("option");
+    option.value = p.projectId;
+    option.textContent = p.title;
+    projSelect.appendChild(option);
+  });
+
   projBtn.addEventListener("click", () => {
     projSelect.style.display =
       projSelect.style.display === "none" ? "block" : "none";
@@ -162,14 +176,15 @@ export function renderModalForm() {
 
   projectDiv.append(projLabel, projBtn, projSelect);
 
-  // ------------------ SUBMIT ICON ------------------
+  const submitDiv = document.createElement("div");
+  submitDiv.classList.add("submit-div");
+
   const submitBtn = document.createElement("button");
   submitBtn.textContent = "Add task";
+  submitBtn.classList.add("modal-submit");
+  submitDiv.appendChild(submitBtn);
+  const todos = getTodos();
 
-  // submit form when clicking icon
-  submitBtn.addEventListener("click", () => form.requestSubmit());
-
-  // ------------------ FORM SUBMIT ------------------
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -182,12 +197,12 @@ export function renderModalForm() {
     });
 
     modal.remove();
-    renderPages();
+    renderSidebar();
   });
 
   // ------------------ BUILD DOM ------------------
-  modalBtns.append(dueDiv, priorityDiv, projectDiv, submitBtn);
-  content.append(titleDiv, descDiv, modalBtns);
+  modalBtns.append(dueDiv, priorityDiv, projectDiv);
+  content.append(titleDiv, descDiv, modalBtns, submitDiv);
 
   form.append(header, content);
   container.append(form);
@@ -196,19 +211,17 @@ export function renderModalForm() {
 }
 
 // main content section of the page
-export function renderContentDetails(todo) {
+export function renderContentDetails(pageTitle, todosList = []) {
   const main = document.querySelector("#main");
   main.innerHTML = "";
 
   const mainTitle = document.createElement("h2");
-  mainTitle.textContent = todo.title;
-
-  const todos = getTodos();
+  mainTitle.textContent = pageTitle;
 
   const todoList = document.createElement("div");
   todoList.id = "todoList";
 
-  todos.forEach((todo) => {
+  todosList.forEach((todo) => {
     const todoItem = document.createElement("div");
     todoItem.id = "todoItem";
 
@@ -220,56 +233,32 @@ export function renderContentDetails(todo) {
 
     const todoCheck = document.createElement("i");
     todoCheck.classList.add("fas", "fa-check");
+    todoCheck.addEventListener("click", () => {
+      completeTodo(todo.todoId);
+      console.log("todo clicked!");
+    });
 
     const editTodo = document.createElement("i");
     editTodo.classList.add("fas", "fa-pen-to-square");
+    editTodo.addEventListener("click", () => {
+      editTodo(todo.todoId);
+    });
 
     const dueDate = document.createElement("span");
-    dueDate.textContent = todo.dueDate;
+    dueDate.textContent = format(new Date(todo.dueDate), "dd-MMM");
+    dueDate.classList.add("ddSpan");
 
     const delTodo = document.createElement("i");
     delTodo.classList.add("fas", "fa-ban");
+    delTodo.addEventListener("click", () => {
+      deleteTodo(todo.todoId);
+    });
 
     actionsDiv.append(todoCheck, editTodo, delTodo);
     todoItem.append(todoTitle, dueDate, actionsDiv);
     todoList.appendChild(todoItem);
   });
 
+  console.log(todosList);
   main.append(mainTitle, todoList);
 }
-
-export function renderHome() {
-  const todos = getTodos();
-  renderList("Home", todos);
-}
-
-export function renderToday() {
-  const todos = getTodos();
-
-  const today = new Date().toDateString();
-  const todayList = todos.filter((todo) => {
-    if (!todo.dueDate) return false;
-    return new Date(todo.dueDate).toDateString() == today;
-  });
-
-  renderList("Today", todayList);
-}
-
-export function renderWeek() {
-  const todos = getTodos();
-
-  const now = new Date();
-  const week = new Date().toDateString();
-  console.log(now);
-  console.log(week);
-  const todayList = todos.filter((todo) => {
-    if (!todo.dueDate) return false;
-
-    const due = new Date(todo.dueDate);
-    return new Date(todo.dueDate).toDateString() == today;
-  });
-
-  renderList("Today", todayList);
-}
-
-export function renderList(title, list) {}
