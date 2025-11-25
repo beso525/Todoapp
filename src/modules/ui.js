@@ -221,6 +221,10 @@ export function renderContentDetails(pageTitle, todosList = []) {
   const todoList = document.createElement("div");
   todoList.id = "todoList";
 
+  if (todosList.length === 0) {
+    todoList.textContent = "No tasks yet.";
+  }
+
   todosList.forEach((todo) => {
     const todoItem = document.createElement("div");
     todoItem.id = "todoItem";

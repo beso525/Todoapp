@@ -4,25 +4,7 @@ import { renderContentDetails } from "./ui";
 
 export let currPage = { title: "Home", id: "homeBtn" };
 
-let todos = [
-  {
-    todoId: 1,
-    title: "Exercise",
-    description: "",
-    dueDate: "2025-12-30",
-    priority: "",
-    project: null,
-  },
-  {
-    todoId: 2,
-    title: "Reading",
-    description: "",
-    dueDate: new Date(),
-    priority: "",
-    project: null,
-  },
-];
-
+let todos = [];
 let doneTodos = [];
 
 let projects = [{ projectId: 1, title: "Bench 180" }];
@@ -34,6 +16,7 @@ export function addProject(projectData) {
     title: projectData.title,
   };
   projects.push(project);
+  saveToLocalStorage();
   return project;
 }
 
@@ -53,8 +36,8 @@ export function addTodo(todoData) {
     project: todoData.project || null,
     completed: false,
   };
-
   todos.push(todo);
+  saveToLocalStorage();
   return todo;
 }
 
@@ -64,12 +47,13 @@ export function deleteTodo(todoId) {
     todos.splice(index, 1);
     selectPage(currPage.title, currPage.id);
   }
+  saveToLocalStorage();
 }
 
 export function completeTodo(todoId) {
   const index = todos.findIndex((t) => t.todoId === todoId);
   todos.splice(index, 1);
-  // saveToLocalStorage();
+  saveToLocalStorage();
   selectPage(currPage.title, currPage.id);
 }
 
@@ -89,6 +73,7 @@ export function selectPage(pageTitle, pageId) {
     default:
       filtered = todos;
   }
+  console.log(currPage);
 
   renderContentDetails(pageTitle, filtered);
 }
@@ -102,5 +87,12 @@ export function getProjects() {
 }
 
 function saveToLocalStorage() {
-  localStorage.setItem("todos");
+  localStorage.setItem("todos", JSON.stringify(todos));
 }
+
+function loadFromLocalStorage() {
+  todos = JSON.parse(localStorage.getItem("todos")) || [];
+  selectPage("Home", "homeBtn");
+}
+
+window.onload = loadFromLocalStorage;

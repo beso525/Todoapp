@@ -230,25 +230,28 @@ header {
   padding: 15px;
   color: black;
   width: 85%;
+  align-items: center;
 }
 
 #main > h2 {
-  justify-content: center;
+  padding-bottom: 15px;
 }
 
 #todoList {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
+  width: 85%;
   background-color: #182646;
   padding: 10px;
+  color: white;
   border: 5px solid#0c1322;
 }
 
 #todoItem {
   display: flex;
   align-items: center;
-  color: white;
+  gap: 5px;
 }
 
 #todoItem p {
