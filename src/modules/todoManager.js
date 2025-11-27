@@ -7,7 +7,10 @@ export let currPage = { title: "Home", id: "homeBtn" };
 let todos = [];
 let doneTodos = [];
 
-let projects = [{ projectId: 1, title: "Bench 180" }];
+let projects = [
+  { projectId: 1, title: "test 1" },
+  { projectId: 2, title: "test 2" },
+];
 
 // project section
 export function addProject(projectData) {
@@ -37,6 +40,7 @@ export function addTodo(todoData) {
     completed: false,
   };
   todos.push(todo);
+  selectPage(currPage.title, currPage.id);
   saveToLocalStorage();
   return todo;
 }

@@ -20,17 +20,16 @@ export function renderSidebar() {
   const list = document.createElement("div");
   list.classList.add("todo-list");
 
-  // ===== Add Pages
-  const options = [
+  // ===== Add pages
+  const pageOptions = [
     { title: "Home", id: "homeBtn" },
     { title: "Today", id: "todayBtn" },
     { title: "This Week", id: "weekBtn" },
-    { title: "Projects", id: "projectsBtn" },
-    { title: "Notes", id: "notesBtn" },
-    { title: "+ Add Task", id: "addBtn" },
   ];
 
-  options.forEach((op) => {
+  const optionsDiv = document.createElement("div");
+  // Loop thru the options
+  pageOptions.forEach((op) => {
     const todoDiv = document.createElement("div");
     todoDiv.classList.add("nav-item");
     todoDiv.id = op.id;
@@ -38,17 +37,51 @@ export function renderSidebar() {
     const title = document.createElement("label");
     title.textContent = op.title;
     todoDiv.addEventListener("click", () => {
-      if (op.id === "addBtn") {
-        renderModalForm();
-      } else {
-        selectPage(op.title, op.id);
-      }
+      selectPage(op.title, op.id);
     });
 
     todoDiv.append(title);
-    list.appendChild(todoDiv);
+    optionsDiv.append(todoDiv);
+    list.appendChild(optionsDiv);
   });
 
+  // Add project section
+  const projOptionsDiv = document.createElement("div");
+
+  const projHeader = document.createElement("h2");
+  projHeader.textContent = "Projects";
+  projHeader.classList.add("projHeader");
+  projOptionsDiv.appendChild(projHeader);
+
+  const projectOptions = getProjects();
+  projectOptions.forEach((proj) => {
+    const projDiv = document.createElement("div");
+    projDiv.classList.add("nav-item");
+    projDiv.id = proj.id;
+
+    const projTitle = document.createElement("label");
+    projTitle.textContent = proj.title;
+    projDiv.addEventListener("click", () => {
+      selectPage(proj.title, proj.id);
+    });
+
+    projDiv.append(projTitle);
+    projOptionsDiv.append(projDiv);
+    list.appendChild(projOptionsDiv);
+  });
+
+  // add task or project button
+  const addBtnDiv = document.createElement("div");
+  addBtnDiv.classList.add("addBtnDiv");
+  const addBtn = document.createElement("button");
+  addBtn.classList.add("addBtn");
+  addBtn.textContent = "+";
+  addBtn.addEventListener("click", () => {
+    renderModalForm();
+  });
+
+  addBtnDiv.append(addBtn);
+  list.append(addBtnDiv);
   sidebar.appendChild(list);
 }
 
@@ -117,6 +150,7 @@ export function renderModalForm() {
   const dueInput = document.createElement("input");
   dueInput.id = "dueDate";
   dueInput.type = "date";
+  dueInput.required = true;
 
   dueDiv.append(dueLabel, dueInput);
 
@@ -183,7 +217,6 @@ export function renderModalForm() {
   submitBtn.textContent = "Add task";
   submitBtn.classList.add("modal-submit");
   submitDiv.appendChild(submitBtn);
-  const todos = getTodos();
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();

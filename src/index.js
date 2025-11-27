@@ -19,11 +19,6 @@ function createLayout() {
 
   document.body.append(header);
 
-  // content to include sidebar and main
-  const content = document.createElement("div");
-  content.id = "content";
-  document.body.append(content);
-
   // sidebar
   const sidebar = document.createElement("div");
   sidebar.id = "sidebar";
@@ -33,7 +28,7 @@ function createLayout() {
   const mainTitle = document.createElement("h2");
   main.id = "main";
   main.append(mainTitle);
-  content.append(sidebar, main);
+  document.body.append(sidebar, main);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
